@@ -218,7 +218,7 @@ function Tween(obj, fps)
         return self;
     };
     self.start = function(immediately) {
-        if (tween)
+        if (tween && tween.length)
         {
             if (timer)
             {
@@ -232,13 +232,20 @@ function Tween(obj, fps)
         }
         return self;
     };
-    self.stop = function() {
-        if (timer)
+    self.stop = function(stop) {
+        if (stop || !arguments.length)
         {
-            clearInterval(timer);
-            timer = null;
+            if (timer)
+            {
+                clearInterval(timer);
+                timer = null;
+            }
+            stopped = true;
         }
-        stopped = true;
+        else if (arguments.length && !stop)
+        {
+            stopped = false;
+        }
         return self;
     };
     self.initialize = function() {
@@ -288,7 +295,7 @@ function Tween(obj, fps)
     };
     self.update = function() {
         // manual updating
-        if (tween && !stopped) animate();
+        if (tween && tween.length && !stopped) animate();
         return self;
     };
     self.finished = function() {
