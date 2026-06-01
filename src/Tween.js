@@ -150,7 +150,7 @@ function Tween(obj, fps)
                     "0%-100%": line(keyframes['from'], keyframes['to'])
                 };
             }
-            if (is_callable(keyframes))
+            else if (is_callable(keyframes))
             {
                 keyframes = {
                     "0%-100%": keyframes
@@ -173,28 +173,33 @@ function Tween(obj, fps)
                 }).sort(function(kf1, kf2) {
                     return kf1.frame - kf2.frame;
                 });
+                keyframes = keyframes.reduce(function(kframes, kf, i) {
+                    if (kf.frame < frames-1)
+                    {
+                        if (!is_callable(kf.path))
+                        {
+                            if (i+1 < keyframes.length)
+                            {
+                                kf.path = line(kf.path, is_callable(keyframes[i+1].path) ? keyframes[i+1].path(0) : keyframes[i+1].path);
+                            }
+                            else if (i-1 >= 0)
+                            {
+                                kf.path = line(is_callable(keyframes[i-1].path) ? keyframes[i-1].path(1) : keyframes[i-1].path, kf.path);
+                            }
+                            else
+                            {
+                                kf.path = line(kf.path, kf.path);
+                            }
+                        }
+                        kframes.push(kf);
+                    }
+                    return kframes;
+                }, []);
                 if (keyframes.length)
                 {
                     tween.push({
                         prop: prop,
-                        keyframes: keyframes.map(function(kf, i) {
-                            if (!is_callable(kf.path))
-                            {
-                                if (i+1 < keyframes.length)
-                                {
-                                    kf.path = line(kf.path, is_callable(keyframes[i+1].path) ? keyframes[i+1].path(0) : keyframes[i+1].path);
-                                }
-                                else if (i-1 >= 0)
-                                {
-                                    kf.path = line(is_callable(keyframes[i-1].path) ? keyframes[i-1].path(1) : keyframes[i-1].path, kf.path);
-                                }
-                                else
-                                {
-                                    kf.path = line(kf.path, kf.path);
-                                }
-                            }
-                            return kf;
-                        }),
+                        keyframes: keyframes,
                         duration: duration,
                         delay: delay,
                         easing: easing,
@@ -212,7 +217,7 @@ function Tween(obj, fps)
         }
         return self;
     };
-    self.start = function(immediate) {
+    self.start = function(immediately) {
         if (tween)
         {
             if (timer)
@@ -222,7 +227,7 @@ function Tween(obj, fps)
             }
             self.rewind();
             stopped = false;
-            if ("immediate" === immediate) animate();
+            if ("immediately" === immediately) animate();
             timer = setInterval(animate, 1000 / fps);
         }
         return self;
