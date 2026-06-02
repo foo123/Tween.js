@@ -2,6 +2,8 @@
 
 A versatile and performant **Tween API**
 
+![Tween.js](/tween.png)
+
 **version: 1.0.0 in progress**
 
 
@@ -29,7 +31,6 @@ Tween({alpha:0, x:0, y:0}, 60/*fps*/)
     },
     onEnd: function(obj, tween) { }
 })
-.initialize()
 .start();
 
 // instantiate Tween
