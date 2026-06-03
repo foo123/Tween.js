@@ -39,11 +39,19 @@ const tween = Tween(object, fps);
 // methods
 // tween a property of object (chainable method)
 tween.animate(property, keyframes, duration, delay, easing, options);
-// keyframes are objects that have keyframe numbers or ranges as keys and paths as values
-// eg:
-// {'from':0, 'to':1} same as {'0%':0, '100%':1} same as {'0%-100%':Tween.Path.line(0, 1)}
+// keyframes is an object that has keyframe numbers or ranges as keys and paths as values
+// Ex1:
+// {'from':a, 'to':b}
+// same as: {'0%':a, '100%':b}
+// same as: {'0%-100%':Tween.Path.line(a, b)}
+// same as: Tween.Path.line(a, b)
+
+// Ex2:
 // {'0%':0, '50%':0.3, '100%':1}
+
+// Ex3:
 // {'0%-50%':Tween.Path.line(0, 0.3), '50%-100%':Tween.Path.bezier(0.3, 0.5, 0.6, 1)}
+
 // etc..
 
 // reverse tween (chainable method)
@@ -79,6 +87,13 @@ tween.fps();
 // dispose tween
 tween.dispose();
 
-// Tween.Easing implements various easing methods
-// Tween.Path implements various curves that a tween property can be animated upon (except the trivial "line" curve)
+// Tween.Easing implements various easing methods (similar to css easings)
+
+// Tween.Path implements various curves that a tween property can be animated upon:
+// Line: Tween.Path.line(a, b), line between a, b values
+// PolyLine: Tween.Path.polyline(a, b, c, d, ..), polyline between a, b, c, d, .. values
+// Bezier: Tween.Path.bezier(a, b, c [, d]), quadratic or cubic bezier by a, b, c [, d] control values
+// Arc: arc=Tween.Path.arc(x1, y1, x2, y2, rx, ry, phi, fa, fs)
+// use arc.x or arc.y
+// elliptic arc curve from (x1,y1) to (x2,y2) with given radii and rotation phi and large arc fa and sweep fs flags
 ```
