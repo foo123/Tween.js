@@ -18,7 +18,7 @@ A versatile and performant **Tween API**
 // animate an HTML element
 const el = document.getElementById('animated');
 
-Tween({alpha:0, x:0, y:0}, 60/*fps*/)
+Tween({alpha:0, x:0, y:0})
 .animate('alpha', {from:0, to:1}, 400/*duration*/, 0/*delay*/)
 .animate('x', Tween.Path.bezier(0, 30, 10), 600/*duration*/, 0/*delay*/, 'ease-out'/*easing*/)
 .animate('y', Tween.Path.bezier(0, 30, 10), 600/*duration*/, 0/*delay*/, 'ease-out'/*easing*/, {
@@ -31,10 +31,11 @@ Tween({alpha:0, x:0, y:0}, 60/*fps*/)
     },
     onEnd: function(obj, tween) { }
 })
+.fps(60)
 .start();
 
 // instantiate Tween
-const tween = Tween(object, fps);
+const tween = Tween(object);
 
 // methods
 // tween a property of object (chainable method)
@@ -72,17 +73,21 @@ tween.resume();
 // rewind tween, so it can replay (chainable method)
 tween.rewind();
 
-// update tween manually (only if start() method is not used) (chainable method)
+// update tween manually (only if start() and enqueue() methods are not used) (chainable method)
 tween.update();
 
-// start tween, immediately if immediately = "immediately", updates tween automatically (chainable method)
+// enqueue tween in global tweens list (chainable method)
+// global tweens updated on demand by calling Tween.tick()
+tween.enqueue();
+
+// start tween (only if not enqueued), immediately if immediately = "immediately", updates tween automatically (chainable method)
 tween.start(immediately);
 
 // whether tween has finished (true/false)
 tween.finished();
 
-// the fps of the tween (integer)
-tween.fps();
+// get/set the fps of the tween (integer)
+tween.fps(new_fps);
 
 // dispose tween
 tween.dispose();
