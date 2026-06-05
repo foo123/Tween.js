@@ -38,12 +38,18 @@ function tick()
     if (tweens.length)
     {
         var now = perf.now();
-        tweens = tweens.reduce(function(tweens, tween) {
+        tweens = tweens.filter(function(tween) {
             tween.tick(now);
-            if (tween.finished()) tween.dequeue();
-            else tweens.push(tween);
-            return tweens;
-        }, []);
+            if (tween.finished())
+            {
+                tween.dequeue();
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        });
     }
 }
 
@@ -72,7 +78,7 @@ function Tween(obj)
             {
                 return;
             }
-            if (null == tween.startoftime)
+            if (0 > tween.startoftime)
             {
                 tween.startoftime = now;
             }
@@ -179,6 +185,17 @@ function Tween(obj)
         tween = null;
         obj = null;
     };
+    self.fps = function(new_fps) {
+        if (arguments.length)
+        {
+            fps = new_fps;
+            return self;
+        }
+        else
+        {
+            return fps;
+        }
+    };
     self.animate = function(prop, keyframes, duration, delay, easing, opts) {
         if (tween && is_string(prop))
         {
@@ -243,7 +260,7 @@ function Tween(obj)
                         easing: easing,
                         dir: 1,
                         easingdir: 1,
-                        startoftime: null,
+                        startoftime: -1,
                         time0: time0,
                         time1: time1,
                         time: 0,
@@ -348,7 +365,7 @@ function Tween(obj)
             tween.forEach(function(tween) {
                 tween.keyframe = 0;
                 tween.time = 0;
-                tween.startoftime = null;
+                tween.startoftime = -1;
                 tween.started = false;
             });
         }
@@ -362,34 +379,19 @@ function Tween(obj)
         }
         return self;
     };
-    self.update = function() {
-        // manual updating
-        if (tween && tween.length && !stopped && !enqueued) tick();
-        return self;
-    };
     self.tick = function(now) {
-        // enqueued updating
+        // manual or enqueued updating
         if (tween && tween.length && !stopped) tick(now);
         return self;
     };
     self.finished = function() {
         return 0 === (tween || []).filter(function(tween) {return tween.time <= tween.time1;}).length;
     };
-    self.fps = function(new_fps) {
-        if (arguments.length)
-        {
-            fps = new_fps;
-            return self;
-        }
-        else
-        {
-            return fps;
-        }
-    };
 }
 Tween[proto] = {
     constructor: Tween,
     dispose: null,
+    fps: null,
     animate: null,
     start: null,
     enqueue: null,
@@ -400,10 +402,8 @@ Tween[proto] = {
     reverse: null,
     rewind: null,
     resume: null,
-    update: null,
     tick: null,
-    finished: null,
-    fps: null
+    finished: null
 };
 def(Tween, 'tick', {
     get: function() {return tick;},

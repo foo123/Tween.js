@@ -4,7 +4,7 @@ A versatile and performant **Tween API**
 
 ![Tween.js](/tween.png)
 
-**version: 1.0.0 in progress**
+**version: 1.0.0** 7.5 kB minified
 
 
 **Demo Example**
@@ -19,6 +19,7 @@ A versatile and performant **Tween API**
 const el = document.getElementById('animated');
 
 Tween({alpha:0, x:0, y:0})
+.fps(60) // default
 .animate('alpha', {from:0, to:1}, 400/*duration*/, 0/*delay*/)
 .animate('x', Tween.Path.bezier(0, 30, 10), 600/*duration*/, 0/*delay*/, 'ease-out'/*easing*/)
 .animate('y', Tween.Path.bezier(0, 30, 10), 600/*duration*/, 0/*delay*/, 'ease-out'/*easing*/, {
@@ -31,7 +32,6 @@ Tween({alpha:0, x:0, y:0})
     },
     onEnd: function(obj, tween) { }
 })
-.fps(60)
 .start();
 
 // instantiate Tween
@@ -55,13 +55,16 @@ tween.animate(property, keyframes, duration, delay, easing, options);
 
 // etc..
 
+// get/set the fps of the tween (integer, default 60)
+tween.fps(new_fps);
+
 // reverse tween (chainable method)
 tween.reverse();
 
-// initialize tween, set object properties to initial values (depending on direction of tween) (chainable method)
+// initialize tween, set object props to initial values (depending on direction of tween) (chainable method)
 tween.initialize();
 
-// finalize tween, set object properties to final values (depending on direction of tween) (chainable method)
+// finalize tween, set object props to final values (depending on direction of tween) (chainable method)
 tween.finalize();
 
 // stop tween (chainable method)
@@ -73,32 +76,25 @@ tween.resume();
 // rewind tween, so it can replay (chainable method)
 tween.rewind();
 
-// update tween manually (only if start() and enqueue() methods are not used) (chainable method)
-tween.update();
-
 // enqueue tween in global tweens list (chainable method)
 // global tweens updated on demand by calling Tween.tick()
 tween.enqueue();
 
-// start tween (only if not enqueued), immediately if immediately = "immediately", updates tween automatically (chainable method)
+// start tween, only if not enqueued, immediately if immediately = "immediately" (chainable method)
 tween.start(immediately);
 
 // whether tween has finished (true/false)
 tween.finished();
 
-// get/set the fps of the tween (integer)
-tween.fps(new_fps);
-
 // dispose tween
 tween.dispose();
 
-// Tween.Easing implements various easing methods (similar to css easings)
+// Tween.Easing implements various easing methods (similar to CSS easings)
 
 // Tween.Path implements various curves that a tween property can be animated upon:
-// Line: Tween.Path.line(a, b), line between a, b values
-// PolyLine: Tween.Path.polyline(a, b, c, d, ..), polyline between a, b, c, d, .. values
-// Bezier: Tween.Path.bezier(a, b, c [, d]), quadratic or cubic bezier by a, b, c [, d] control values
-// Arc: arc=Tween.Path.arc(x1, y1, x2, y2, rx, ry, phi, fa, fs)
-// use arc.x or arc.y
+// Tween.Path.line(a, b), line between a, b values
+// Tween.Path.polyline(a, b, c, d, ..), polyline between a, b, c, d, .. values
+// Tween.Path.bezier(a, b, c [, d]), quadratic or cubic bezier by a, b, c [, d] control values
+// arc = Tween.Path.arc(x1, y1, x2, y2, rx, ry, phi, fa, fs), use arc.x or arc.y
 // elliptic arc curve from (x1,y1) to (x2,y2) with given radii and rotation phi and large arc fa and sweep fs flags
 ```
